@@ -107,8 +107,12 @@ public class GraphicTestView extends View {
 		VSegment SCa = new VSegment(XC, YCa1, YCa2);
 		VSegment SCb = new VSegment(XC, YCa3, YCa4);
 
-		pipe = new ComposedBordered(new CurvedPipeShape(SA, SB),
-				new CurvedPipeShape(SBa, SCa), new CurvedPipeShape(SBb, SCb));
+		VSegment SDa = new VSegment(XD, YCa1, YCa2);
+		VSegment SDb = new VSegment(XD, YCa3, YCa4);
+
+		pipe = new ComposedBordered(new PipeShape(SA, SB),
+				new CurvedPipeShape(SBa, SCa), new CurvedPipeShape(SBb, SCb),
+				new PipeShape(SCa, SDa), new PipeShape(SCb, SDb));
 	}
 
 	protected void onDraw(Canvas canvas) {
