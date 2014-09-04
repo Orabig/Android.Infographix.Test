@@ -2,6 +2,9 @@ package com.crocoware.infographix.test;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +17,7 @@ import com.crocoware.infographix.IBorderedDrawable;
 import com.crocoware.infographix.shapes.CurvedPipeShape;
 import com.crocoware.infographix.shapes.DownRightArcShape;
 import com.crocoware.infographix.shapes.HSegment;
+import com.crocoware.infographix.shapes.HSplitShape;
 import com.crocoware.infographix.shapes.PipeShape;
 import com.crocoware.infographix.shapes.VSegment;
 
@@ -46,7 +50,7 @@ public class GraphicTestView extends View {
 	private float height2 = 150;
 
 	private void buildDrawable() {
-		version2();
+		version3();
 	}
 
 	private void version1() {
@@ -110,9 +114,51 @@ public class GraphicTestView extends View {
 		VSegment SDa = new VSegment(XD, YCa1, YCa2);
 		VSegment SDb = new VSegment(XD, YCa3, YCa4);
 
-		pipe = new ComposedBordered(new PipeShape(SA, SB),
-				new CurvedPipeShape(SBa, SCa), new CurvedPipeShape(SBb, SCb),
+		pipe = new ComposedBordered(new PipeShape(SA, SB), new CurvedPipeShape(
+				SBa, SCa), new CurvedPipeShape(SBb, SCb), new PipeShape(SCa,
+				SDa), new PipeShape(SCb, SDb));
+	}
+
+	private void version3() {
+		float WIDTH = 300;
+		float pX = WIDTH / 3; // On découpe l'espace H en bouts
+
+		// Ecartement initial
+		float HEIGHT = 100;
+		// Position du haut du funnel (entrée)
+		float X0 = 10;
+		float Y0 = 200;
+
+		float ratio = 0.4f;// 0.5f + (float) Math.cos(elapsedTime / 1000) *
+							// 0.4f;
+
+		float gap = 30;
+
+		// Calcul des positions
+		float Y1 = Y0 + HEIGHT;
+		float XB = X0 + pX;
+
+		VSegment SA = new VSegment(X0, Y0, Y1);
+		VSegment SB = new VSegment(XB, Y0, Y1);
+
+		// Creation d'un HSplitShape
+		HSplitShape split = new HSplitShape(SB, WIDTH, ratio, gap);
+
+		VSegment SCa = split.getOutputSegments()[0];
+		VSegment SCb = split.getOutputSegments()[1];
+
+		VSegment SDa = SCa.translate(pX, 0);
+		VSegment SDb = SCb.translate(pX, 0);
+
+		split.setBodyShader(new LinearGradient(split.getLeft(), split.getTop(),
+				split.getRight(), split.getTop(), Color.RED, Color.BLACK,
+				TileMode.CLAMP));
+
+		pipe = new ComposedBordered(new PipeShape(SA, SB), split,
 				new PipeShape(SCa, SDa), new PipeShape(SCb, SDb));
+		pipe.resize(30, 50, 300, 200);
+
+		pipe.setEdgeColor(Color.RED);
 	}
 
 	protected void onDraw(Canvas canvas) {
@@ -124,8 +170,8 @@ public class GraphicTestView extends View {
 
 		pipe.draw(canvas);
 
-		if (isAnimationPending)
-			this.postInvalidateDelayed(1000 / FPS);
+		// if (isAnimationPending)
+		// this.postInvalidateDelayed(1000 / FPS);
 	}
 
 	private void computePositions(float ratio) {
