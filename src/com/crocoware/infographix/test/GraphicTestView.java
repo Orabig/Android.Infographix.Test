@@ -16,6 +16,7 @@ import com.crocoware.infographix.ComposedBordered;
 import com.crocoware.infographix.IBorderedDrawable;
 import com.crocoware.infographix.shapes.CurvedPipeShape;
 import com.crocoware.infographix.shapes.DownRightArcShape;
+import com.crocoware.infographix.shapes.HJoinShape;
 import com.crocoware.infographix.shapes.HSegment;
 import com.crocoware.infographix.shapes.HSplitShape;
 import com.crocoware.infographix.shapes.PipeShape;
@@ -148,15 +149,25 @@ public class GraphicTestView extends View {
 		VSegment SCb = split.getOutputSegments()[1];
 
 		VSegment SDa = SCa.translate(pX, 0);
-		VSegment SDb = SCb.translate(pX, 0);
+		VSegment SDb = SCb.translate(pX/* *2 */, 0);
+		
+		VSegment SDadded = SDa.scaleUp(2.50f);
+		VSegment SDend = SDadded.translate(pX,0);
+
+		HJoinShape join = new HJoinShape(/*SDend*/SDadded, SDb, WIDTH);
+		
+		VSegment joined = join.getOutputSegment();
+		VSegment last = joined.translate(pX, 0);
+
+		pipe = new ComposedBordered(new PipeShape(SA, SB), split,
+				new PipeShape(SCa, SDa), new PipeShape(SCb, SDb),
+//				new PipeShape(SDadded,SDend),
+				join,new PipeShape(joined, last));
+		pipe.resize(30, 50, 350, 200);
 
 		split.setBodyShader(new LinearGradient(split.getLeft(), split.getTop(),
 				split.getRight(), split.getTop(), Color.RED, Color.BLACK,
 				TileMode.CLAMP));
-
-		pipe = new ComposedBordered(new PipeShape(SA, SB), split,
-				new PipeShape(SCa, SDa), new PipeShape(SCb, SDb));
-		pipe.resize(30, 50, 300, 200);
 
 		pipe.setEdgeColor(Color.RED);
 	}
