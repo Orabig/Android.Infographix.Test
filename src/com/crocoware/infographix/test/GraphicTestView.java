@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.PointF;
 import android.graphics.Shader.TileMode;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.animation.Interpolator;
 import com.crocoware.infographix.AbstractBorderedDrawable;
 import com.crocoware.infographix.ComposedBordered;
 import com.crocoware.infographix.IBorderedDrawable;
+import com.crocoware.infographix.shapes.ArcShape;
 import com.crocoware.infographix.shapes.CurvedPipeShape;
 import com.crocoware.infographix.shapes.DownRightArcShape;
 import com.crocoware.infographix.shapes.HJoinShape;
@@ -121,11 +123,11 @@ public class GraphicTestView extends View {
 	}
 
 	private void version3() {
-		float WIDTH = 300;
+		float WIDTH = 100;
 		float pX = WIDTH / 3; // On découpe l'espace H en bouts
 
 		// Ecartement initial
-		float HEIGHT = 100;
+		float HEIGHT = 50;
 		// Position du haut du funnel (entrée)
 		float X0 = 10;
 		float Y0 = 200;
@@ -148,28 +150,33 @@ public class GraphicTestView extends View {
 		VSegment SCa = split.getOutputSegments()[0];
 		VSegment SCb = split.getOutputSegments()[1];
 
-		VSegment SDa = SCa.translate(pX, 0);
-		VSegment SDb = SCb.translate(pX/* *2 */, 0);
-		
+		VSegment SDa = SCa.translateV(pX, 0);
+		VSegment SDb = SCb.translateV(pX/* *2 */, 0);
+
 		VSegment SDadded = SDa.scaleUp(2.50f);
-		VSegment SDend = SDadded.translate(pX,0);
+		VSegment SDend = SDadded.translateV(pX, 0);
 
 		HJoinShape join = new HJoinShape(/*SDend*/SDadded, SDb, WIDTH);
-		
+
 		VSegment joined = join.getOutputSegment();
-		VSegment last = joined.translate(pX, 0);
+		VSegment last = joined.translateV(pX, 0);
+		
+		PointF center = new PointF(last.getX(),last.getY1()-pX);
+		
+		ArcShape arc = new ArcShape(last, center, -145);
 
 		pipe = new ComposedBordered(new PipeShape(SA, SB), split,
 				new PipeShape(SCa, SDa), new PipeShape(SCb, SDb),
-//				new PipeShape(SDadded,SDend),
-				join,new PipeShape(joined, last));
-		pipe.resize(30, 50, 350, 200);
+				//				new PipeShape(SDadded,SDend),
+				join, new PipeShape(joined, last),arc);
+//		pipe.resize(30, 50, 250, 200);
 
 		split.setBodyShader(new LinearGradient(split.getLeft(), split.getTop(),
 				split.getRight(), split.getTop(), Color.RED, Color.BLACK,
 				TileMode.CLAMP));
 
 		pipe.setEdgeColor(Color.RED);
+//		arc.setEdgeColor(Color.BLACK);
 	}
 
 	protected void onDraw(Canvas canvas) {
