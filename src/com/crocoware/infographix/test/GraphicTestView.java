@@ -169,7 +169,7 @@ public class GraphicTestView extends View {
 				new PipeShape(SCa, SDa), new PipeShape(SCb, SDb),
 				//				new PipeShape(SDadded,SDend),
 				join, new PipeShape(joined, last),arc);
-//		pipe.resize(30, 50, 250, 200);
+		pipe.resize(30, 50, 320, 250);
 
 		split.setBodyShader(new LinearGradient(split.getLeft(), split.getTop(),
 				split.getRight(), split.getTop(), Color.RED, Color.BLACK,
