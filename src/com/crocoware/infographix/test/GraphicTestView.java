@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Shader.TileMode;
+import android.graphics.SweepGradient;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.crocoware.infographix.shapes.HJoinShape;
 import com.crocoware.infographix.shapes.HSegment;
 import com.crocoware.infographix.shapes.HSplitShape;
 import com.crocoware.infographix.shapes.PipeShape;
+import com.crocoware.infographix.shapes.Segment;
 import com.crocoware.infographix.shapes.VSegment;
 
 public class GraphicTestView extends View {
@@ -163,13 +166,25 @@ public class GraphicTestView extends View {
 		
 		PointF center = new PointF(last.getX(),last.getY1()-pX);
 		
-		ArcShape arc = new ArcShape(last, center, -145);
+		Segment[] starts = last.split(5);
+		ArcShape arcs[] = new ArcShape[5];
+		int colors[] = {Color.CYAN,Color.RED,Color.LTGRAY,Color.GREEN,Color.BLUE};
+		for (int i=0;i<5;i++) {
+		 arcs[i] = new ArcShape(starts[i], center, -100-15*i);
+		 arcs[i].setSweepShader(Color.WHITE,colors[i]);
+		}
+		
 
 		pipe = new ComposedBordered(new PipeShape(SA, SB), split,
 				new PipeShape(SCa, SDa), new PipeShape(SCb, SDb),
 				//				new PipeShape(SDadded,SDend),
-				join, new PipeShape(joined, last),arc);
-		pipe.resize(30, 50, 320, 250);
+				join, new PipeShape(joined, last),arcs[0]
+						,arcs[1],arcs[2],arcs[3],arcs[4]
+						);
+//		Log.e("pipe",""+pipe.getLeft()+","+pipe.getTop()+","+(pipe.getRight()-pipe.getLeft())+","+(pipe.getBottom()-pipe.getTop()));
+		float range10 = (1+(float)Math.cos(elapsedTime/300))*5;
+//		pipe.resize(10+range10,20+range10,413.333f,241.666f);
+		pipe.translate(5-range10,5-range10);
 
 		split.setBodyShader(new LinearGradient(split.getLeft(), split.getTop(),
 				split.getRight(), split.getTop(), Color.RED, Color.BLACK,
@@ -188,8 +203,8 @@ public class GraphicTestView extends View {
 
 		pipe.draw(canvas);
 
-		// if (isAnimationPending)
-		// this.postInvalidateDelayed(1000 / FPS);
+		 if (isAnimationPending)
+		 this.postInvalidateDelayed(1000 / FPS);
 	}
 
 	private void computePositions(float ratio) {
