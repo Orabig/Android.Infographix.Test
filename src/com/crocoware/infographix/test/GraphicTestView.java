@@ -72,8 +72,10 @@ public class GraphicTestView extends View {
 
 		// Give me an S
 		Segment startS = new Segment(252, 60, 270, 60);
-		letterS = new Pipeline(startS).turnLeft(90,0).setBodyColor(Color.BLUE).turnLeft().turnLeft().turnRight()
-				.turnRight().turnRight(90,0).close().getDrawable();
+		letterS = new Pipeline(startS).turnLeft(90, 0).setBodyColor(Color.BLUE)
+				.turnLeft().turnLeft().setBodyGradient(Color.YELLOW)
+				.turnRight().turnRight(90 + 20 * cycle).turnLeft(90, 0).close()
+				.getDrawable();
 
 	}
 
