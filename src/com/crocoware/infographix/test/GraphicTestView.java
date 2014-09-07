@@ -1,5 +1,9 @@
 package com.crocoware.infographix.test;
 
+import java.nio.channels.Pipe;
+import java.nio.channels.Pipe.SinkChannel;
+import java.nio.channels.Pipe.SourceChannel;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -66,13 +70,10 @@ public class GraphicTestView extends View {
 				.turnLeft(180).setBodyGradient(Color.WHITE, Color.GREEN)
 				.forward(20).setBodyColor(Color.GREEN).close().getDrawable();
 
-		letterE = new Pipeline(new Segment(200, 60, 200, 140)).split(80, 0.4f)
-				//
-				.tag("split").select(0).setBodyGradient(Color.WHITE, Color.RED).forward(100).setBodyColor(Color.RED)
-				//
-				.back("split").select(1).setBodyGradient(Color.WHITE, Color.GREEN).forward(100).setBodyColor(Color.GREEN)
-				//
-				.getDrawable();
+		// Give me an S
+		Segment startS = new Segment(252, 60, 270, 60);
+		letterS = new Pipeline(startS).turnLeft(90,0).setBodyColor(Color.BLUE).turnLeft().turnLeft().turnRight()
+				.turnRight().turnRight(90,0).close().getDrawable();
 
 	}
 
@@ -105,6 +106,7 @@ public class GraphicTestView extends View {
 		drawGrid(canvas, 50);
 		letterT1.draw(canvas);
 		letterE.draw(canvas);
+		letterS.draw(canvas);
 
 		if (isAnimationPending)
 			this.postInvalidateDelayed(1000 / FPS);
