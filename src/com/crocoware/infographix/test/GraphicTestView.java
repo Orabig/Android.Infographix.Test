@@ -12,7 +12,7 @@ import android.view.animation.Interpolator;
 import com.crocoware.infographix.Arrow;
 import com.crocoware.infographix.IBorderedDrawable;
 import com.crocoware.infographix.shapes.Pipeline;
-import com.crocoware.infographix.shapes.Segment;
+import com.crocoware.infographix.utils.Segment;
 
 public class GraphicTestView extends View {
 
@@ -65,6 +65,14 @@ public class GraphicTestView extends View {
 				.setBodyGradient(Color.WHITE, Color.CYAN).reverse().close()
 				.turnLeft(180).setBodyGradient(Color.WHITE, Color.GREEN)
 				.forward(20).setBodyColor(Color.GREEN).close().getDrawable();
+
+		letterE = new Pipeline(new Segment(200, 60, 200, 140)).split(80, 0.4f)
+				//
+				.tag("split").select(0).setBodyGradient(Color.WHITE, Color.RED).forward(100).setBodyColor(Color.RED)
+				//
+				.back("split").select(1).setBodyGradient(Color.WHITE, Color.GREEN).forward(100).setBodyColor(Color.GREEN)
+				//
+				.getDrawable();
 
 	}
 
