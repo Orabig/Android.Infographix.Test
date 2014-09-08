@@ -1,9 +1,5 @@
 package com.crocoware.infographix.test;
 
-import java.nio.channels.Pipe;
-import java.nio.channels.Pipe.SinkChannel;
-import java.nio.channels.Pipe.SourceChannel;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,8 +11,10 @@ import android.view.animation.Interpolator;
 
 import com.crocoware.infographix.Arrow;
 import com.crocoware.infographix.IBorderedDrawable;
-import com.crocoware.infographix.shapes.Pipeline;
+import com.crocoware.infographix.Pipeline;
+import com.crocoware.infographix.utils.Position;
 import com.crocoware.infographix.utils.Segment;
+import com.crocoware.infographix.utils.Vector;
 
 public class GraphicTestView extends View {
 
@@ -26,6 +24,7 @@ public class GraphicTestView extends View {
 	private IBorderedDrawable letterS;
 	private IBorderedDrawable letterT2;
 	private IBorderedDrawable test;
+	private IBorderedDrawable test2;
 
 	private static long DURATION = 100000;
 	private static int FPS = 40;
@@ -100,7 +99,7 @@ public class GraphicTestView extends View {
 				.close()
 				//
 				.back("split5").select(2).setBodyGradient(Color.MAGENTA)
-				.forward(80).forward(50, 30).setArrow(Arrow.SIMPLE).forward(50)
+				.forward(80).forward(50, 40).setArrow(Arrow.SIMPLE).forward(50)
 				.setBodyColor(Color.GRAY).turnLeft().forward(30)
 				.setArrow(Arrow.SIMPLE).forward(60).setBodyColor(Color.LTGRAY)
 				.setArrow(Arrow.SIMPLE).forward(40)
@@ -111,7 +110,55 @@ public class GraphicTestView extends View {
 				.forward(60).turnRight().turnLeft()
 				//
 				.back("split5").select(4).setBodyGradient(Color.GREEN)
-				.forward(20).turnRight(180).close().forward(20).turnLeft().setArrow(Arrow.NARROW)
+				.forward(20).turnRight(180).close().forward(80).turnRight().setArrow(Arrow.NARROW)
+				//
+				.getDrawable();
+		
+		Pipeline pipe = new Pipeline(new Segment(100, 530, 100, 600))
+		.forward(50);
+		Vector direction = pipe.getDirection();
+		Position center = pipe.getOutputPosition().translate(80,direction).translate(100,direction.rotate(-90));
+		test2 = pipe.split(80, 8)
+		//
+		.tag("split5")
+				.select(0)
+				.setBodyGradient(Color.YELLOW)
+				.turnAround(center, -55).forward(100+15*cycle)
+				//
+				.back("split5")
+				.select(1)
+				.setBodyGradient(Color.RED)
+				.turnAround(center, -55).forward(110-8*cycle)
+				//
+				.back("split5")
+				.select(2)
+				.setBodyGradient(Color.CYAN)
+				.turnAround(center, -55).forward(80+55*cycle)
+				//
+				.back("split5")
+				.select(3)
+				.setBodyGradient(Color.MAGENTA)
+				.turnAround(center, -55).forward(55+25*cycle)
+				//
+				.back("split5")
+				.select(4)
+				.setBodyGradient(Color.CYAN)
+				.turnAround(center, -55).forward(85+55*cycle)
+				//
+				.back("split5")
+				.select(5)
+				.setBodyGradient(Color.RED)
+				.turnAround(center, -55).forward(75+28*cycle)
+				//
+				.back("split5")
+				.select(6)
+				.setBodyGradient(Color.CYAN)
+				.turnAround(center, -55).forward(109-38*cycle)
+				//
+				.back("split5")
+				.select(7)
+				.setBodyGradient(Color.RED)
+				.turnAround(center, -55).forward(79-8*cycle)
 				//
 				.getDrawable();
 		
@@ -121,9 +168,9 @@ public class GraphicTestView extends View {
 
 	private void drawGrid(Canvas canvas, int size) {
 		Paint paint = new Paint();
-		for (int i = 0; i <= 400; i += size) {
-			canvas.drawLine(i, 0, i, 400, paint);
-			canvas.drawLine(0, i, 400, i, paint);
+		for (int i = 0; i <= 600; i += size) {
+			canvas.drawLine(i, 0, i, 600, paint);
+			canvas.drawLine(0, i, 600, i, paint);
 		}
 	}
 
@@ -151,6 +198,7 @@ public class GraphicTestView extends View {
 		letterS.draw(canvas);
 
 		test.draw(canvas);
+		test2.draw(canvas);
 
 		if (isAnimationPending)
 			this.postInvalidateDelayed(1000 / FPS);
