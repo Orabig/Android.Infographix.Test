@@ -51,6 +51,7 @@ public class GraphicTestView extends View {
 	 */
 	private void buildDrawable(float ratio, float cycle) {
 
+		/// "letterT"
 		// Give me a T
 		Segment startT = new Segment(40, 40, 40, 70);
 		float len1 = 20 + 40 * cycle;
@@ -62,6 +63,7 @@ public class GraphicTestView extends View {
 				.turnLeft(80 + 20 * cycle, 0).forward(60, 20).close()
 				.getDrawable();
 
+		/// "letterE"
 		// Give me an E
 		Segment startE = new Segment(200, 60, 200, 40); // Notice we're going
 														// left
@@ -193,7 +195,9 @@ public class GraphicTestView extends View {
 		buildDrawable(ratio, cycle);
 
 		drawGrid(canvas, 50);
+		/// "drawCanvas"
 		letterT1.draw(canvas);
+		/// "stop"
 		letterE.draw(canvas);
 		letterS.draw(canvas);
 
